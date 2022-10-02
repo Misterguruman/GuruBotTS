@@ -1,0 +1,32 @@
+{
+  "name": "report-bot",
+  "version": "0.0.1",
+  "description": "A report bot for... reports!",
+  "main": "src/index.ts",
+  "scripts": {
+    "reload": "ts-node-dev --respawn src/index.ts",
+    "test": "ts-node-dev test.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@discordjs/builders": "^1.1.0",
+    "@discordjs/rest": "^1.0.1",
+    "@types/cron": "^2.0.0",
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.6",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^1.35.7",
+    "axios": "^0.27.2",
+    "cron": "^2.1.0",
+    "date-fns": "^2.28.0",
+    "discord.js": "^14.0.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "fetch": "^1.1.0"
+  }
+}
