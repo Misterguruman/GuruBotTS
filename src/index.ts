@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-import { Client, GatewayIntentBits } from 'discord.js'
+import { Client, GatewayIntentBits, Guild, OAuth2Guild } from 'discord.js'
 import { supabase, getAllTableData } from './supabase';
 import {RegisterSlashCommand } from'./registerSlashCommands'
 import * as fs from 'fs';
@@ -14,7 +14,14 @@ const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.ts'));
 
 //Create discord.js client
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [
+	GatewayIntentBits.Guilds, 
+	GatewayIntentBits.GuildMessages, 
+	GatewayIntentBits.GuildVoiceStates, 
+	GatewayIntentBits.MessageContent, 
+	GatewayIntentBits.GuildMembers, 
+	GatewayIntentBits.GuildPresences] 
+});
 
 //Create supabase client
 supabase
@@ -36,5 +43,25 @@ for (const file of eventFiles) {
 // Login to Discord with your client's token
 client.login(process.env.DISCORDTOKEN);
 
+async function getChannels(guild:Guild) {
+	let channels = await guild.channels.fetch()
+
+	channels.forEach((channel) => console.log(JSON.stringify(channel)))
+}
+
+
 let registered_guilds = client.guilds.fetch()
-	.then((collection) => collection.forEach((item) => RegisterSlashCommand(item.id)))
+.then((collection) => {  
+	collection.forEach((guild) => {
+		RegisterSlashCommand(guild.id)
+		// guild.fetch()
+		// .then((guild) => { getChannels(guild) })
+
+		
+	})
+})
+
+
+let channels = client.channels.valueOf()
+console.log(channels.forEach((channel) => console.log(JSON.stringify(channel))))
+
