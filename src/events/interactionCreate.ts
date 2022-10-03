@@ -1,19 +1,28 @@
 import { supabase, addPlayer } from "../supabase";
+import type { Interaction, Collection } from "discord.js"
 
+declare module "discord.js" {
+	export interface Client {
+		commands: Collection<unknown, any>
+	}
+}
 
 module.exports = {
     name: 'interactionCreate',
-	execute(interaction: any) {
+	async execute(interaction: Interaction) {
         supabase
-		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
+		console.log(`${interaction.user.tag} in #${interaction.guild?.name} triggered an interaction.`);
 
-        if (interaction.isChatInputCommand()) {
-            switch (interaction.commandName) {
-                case 'signup' : 
-                    let response: any = addPlayer(interaction.user.tag, interaction.guildId)
-                    .then((data) => interaction.reply(`User ${data.discord_name} was created in our Guru Casino`))
-                    .catch((error) => interaction.reply(`User was not able to be created. Error: ${error}`))
-            }
+        if (!interaction.isChatInputCommand()) return;
+        const command = interaction.client.commands.get(interaction.commandName);
+
+        if (!command) return;
+    
+        try {
+            await command.execute(interaction);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         }
-	},
+    },
 };

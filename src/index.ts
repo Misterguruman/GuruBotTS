@@ -1,10 +1,16 @@
 // Require the necessary discord.js classes
-import { Client, GatewayIntentBits, Guild, OAuth2Guild } from 'discord.js'
+import { Client, GatewayIntentBits, Guild, OAuth2Guild, Collection } from 'discord.js'
 import { supabase, getAllTableData } from './supabase';
 import {RegisterSlashCommand } from'./registerSlashCommands'
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv'
+
+declare module "discord.js" {
+	export interface Client {
+		commands: Collection<unknown, any>
+	}
+}
 
 // import { createClient } from "@supabase/supabase-js"
 
@@ -26,6 +32,33 @@ const client = new Client({ intents: [
 //Create supabase client
 supabase
 
+// Login to Discord with your client's token
+client.login(process.env.DISCORDTOKEN);
+
+
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	// Set a new item in the Collection
+	// With the key as the command name and the value as the exported module
+	client.commands.set(command.data.name, command);
+}
+
+
+let registered_guilds = client.guilds.fetch()
+.then((collection) => {  
+	collection.forEach((guild) => {
+		RegisterSlashCommand(guild.id)
+		// guild.fetch()
+		// .then((guild) => { getChannels(guild) })
+
+		
+	})
+})
+
 //Route all events to commands/{event}.ts  
 for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
@@ -40,8 +73,6 @@ for (const file of eventFiles) {
 }
 
 
-// Login to Discord with your client's token
-client.login(process.env.DISCORDTOKEN);
 
 async function getChannels(guild:Guild) {
 	let channels = await guild.channels.fetch()
@@ -49,17 +80,6 @@ async function getChannels(guild:Guild) {
 	channels.forEach((channel) => console.log(JSON.stringify(channel)))
 }
 
-
-let registered_guilds = client.guilds.fetch()
-.then((collection) => {  
-	collection.forEach((guild) => {
-		RegisterSlashCommand(guild.id)
-		// guild.fetch()
-		// .then((guild) => { getChannels(guild) })
-
-		
-	})
-})
 
 
 let channels = client.channels.valueOf()
