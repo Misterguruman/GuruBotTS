@@ -16,13 +16,21 @@ export interface paths {
     get: {
       parameters: {
         query: {
+          /** database entry unique id */
           id?: parameters["rowFilter.players.id"];
           created_at?: parameters["rowFilter.players.created_at"];
+          /** The amount of Guru Credits this user has */
           balance?: parameters["rowFilter.players.balance"];
+          /** Total number of games the user has won */
           wins?: parameters["rowFilter.players.wins"];
+          /** Total number of games the user has lost */
           losses?: parameters["rowFilter.players.losses"];
+          /** Discord user's tag including #0000 */
           discord_name?: parameters["rowFilter.players.discord_name"];
+          /** Discord server's unique identifier */
           discord_server_id?: parameters["rowFilter.players.discord_server_id"];
+          /** Discord user's unique identifier */
+          discord_id?: parameters["rowFilter.players.discord_id"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -73,13 +81,21 @@ export interface paths {
     delete: {
       parameters: {
         query: {
+          /** database entry unique id */
           id?: parameters["rowFilter.players.id"];
           created_at?: parameters["rowFilter.players.created_at"];
+          /** The amount of Guru Credits this user has */
           balance?: parameters["rowFilter.players.balance"];
+          /** Total number of games the user has won */
           wins?: parameters["rowFilter.players.wins"];
+          /** Total number of games the user has lost */
           losses?: parameters["rowFilter.players.losses"];
+          /** Discord user's tag including #0000 */
           discord_name?: parameters["rowFilter.players.discord_name"];
+          /** Discord server's unique identifier */
           discord_server_id?: parameters["rowFilter.players.discord_server_id"];
+          /** Discord user's unique identifier */
+          discord_id?: parameters["rowFilter.players.discord_id"];
         };
         header: {
           /** Preference */
@@ -94,13 +110,21 @@ export interface paths {
     patch: {
       parameters: {
         query: {
+          /** database entry unique id */
           id?: parameters["rowFilter.players.id"];
           created_at?: parameters["rowFilter.players.created_at"];
+          /** The amount of Guru Credits this user has */
           balance?: parameters["rowFilter.players.balance"];
+          /** Total number of games the user has won */
           wins?: parameters["rowFilter.players.wins"];
+          /** Total number of games the user has lost */
           losses?: parameters["rowFilter.players.losses"];
+          /** Discord user's tag including #0000 */
           discord_name?: parameters["rowFilter.players.discord_name"];
+          /** Discord server's unique identifier */
           discord_server_id?: parameters["rowFilter.players.discord_server_id"];
+          /** Discord user's unique identifier */
+          discord_id?: parameters["rowFilter.players.discord_id"];
         };
         body: {
           /** players */
@@ -217,7 +241,9 @@ export interface definitions {
   players: {
     /**
      * Format: bigint
-     * @description Note:
+     * @description database entry unique id
+     *
+     * Note:
      * This is a Primary Key.<pk/>
      */
     id: number;
@@ -226,22 +252,38 @@ export interface definitions {
      * @default now()
      */
     created_at?: string;
-    /** Format: bigint */
+    /**
+     * Format: bigint
+     * @description The amount of Guru Credits this user has
+     */
     balance?: number;
     /**
      * Format: integer
+     * @description Total number of games the user has won
      * @default 0
      */
     wins?: number;
     /**
      * Format: integer
+     * @description Total number of games the user has lost
      * @default 0
      */
     losses?: number;
-    /** Format: text */
+    /**
+     * Format: text
+     * @description Discord user's tag including #0000
+     */
     discord_name: string;
-    /** Format: text */
+    /**
+     * Format: text
+     * @description Discord server's unique identifier
+     */
     discord_server_id: string;
+    /**
+     * Format: text
+     * @description Discord user's unique identifier
+     */
+    discord_id: string;
   };
   guilds: {
     /**
@@ -296,20 +338,43 @@ export interface parameters {
   limit: string;
   /** @description players */
   "body.players": definitions["players"];
-  /** Format: bigint */
+  /**
+   * Format: bigint
+   * @description database entry unique id
+   */
   "rowFilter.players.id": string;
   /** Format: timestamp with time zone */
   "rowFilter.players.created_at": string;
-  /** Format: bigint */
+  /**
+   * Format: bigint
+   * @description The amount of Guru Credits this user has
+   */
   "rowFilter.players.balance": string;
-  /** Format: integer */
+  /**
+   * Format: integer
+   * @description Total number of games the user has won
+   */
   "rowFilter.players.wins": string;
-  /** Format: integer */
+  /**
+   * Format: integer
+   * @description Total number of games the user has lost
+   */
   "rowFilter.players.losses": string;
-  /** Format: text */
+  /**
+   * Format: text
+   * @description Discord user's tag including #0000
+   */
   "rowFilter.players.discord_name": string;
-  /** Format: text */
+  /**
+   * Format: text
+   * @description Discord server's unique identifier
+   */
   "rowFilter.players.discord_server_id": string;
+  /**
+   * Format: text
+   * @description Discord user's unique identifier
+   */
+  "rowFilter.players.discord_id": string;
   /** @description guilds */
   "body.guilds": definitions["guilds"];
   /** Format: uuid */

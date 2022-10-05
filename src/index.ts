@@ -8,7 +8,7 @@ import * as dotenv from 'dotenv'
 
 declare module "discord.js" {
 	export interface Client {
-		commands: Collection<unknown, any>
+		commands: Collection<any, any>
 	}
 }
 
@@ -32,6 +32,7 @@ const client = new Client({ intents: [
 //Create supabase client
 supabase
 
+client.commands = new Collection();
 // Login to Discord with your client's token
 client.login(process.env.DISCORDTOKEN);
 
@@ -65,7 +66,8 @@ for (const file of eventFiles) {
 	const event = require(filePath);
 	if (event.once) {
 		console.log(`Registering ${event.name} as once()`)
-		client.once(event.name, (...args) => event.execute(...args));
+		client.once(event.name, (...args) => event.execute(...args).catch((error) => `ERROR: ${error}`));
+
 	} else {
 		console.log(`Registering ${event.name} as on()`)
 		client.on(event.name, (...args) => event.execute(...args));

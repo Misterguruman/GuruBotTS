@@ -1,25 +1,28 @@
-import { Interaction, SlashCommandBuilder } from 'discord.js'
-import { supabase, addPlayer, checkPlayer } from "../supabase"
+import { SlashCommandBuilder } from 'discord.js'
+import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
+import { addPlayer, checkPlayer, updateBalance,  } from "../supabase"
 
 module.exports = {
     data: new SlashCommandBuilder()
     .setName("signup")
     .setDescription("Creates new user in our Casino database with 0 wins/losses and $100"),
-    async execute(interaction: any) { 
-        console.log(interaction)
-        // supabase
-        // let check = await checkPlayer(interaction.guild.name, interaction.guild.id)
-        // console.log(interaction)
-        // if (check.length !== 0) {
-        //     interaction.reply("User already in database, updating your balance")
-        //     .then((data: any) => console.log(data))
+    async execute(interaction: ChatInputCommandInteraction<CacheType>) { 
 
-        // } 
+        let check = await checkPlayer(interaction.guild!.name, interaction.guild!.id)
 
-        // let response: any = await addPlayer(interaction.user.tag!, interaction.guildId!)
-        // .then((data) => {
-        //     interaction.reply(`User ${data.discord_name} was created in our Guru Casino`)
-        // }
-        // , (error) => interaction.reply(`User was not able to be created. Error: ${error}`))
+        if (check && check[0]) {
+            await interaction.reply("User already in database, updating your balance")
+            await updateBalance(interaction.user.id, 100)
+        } 
+
+        let response: any = addPlayer(interaction.user.tag!, interaction.guildId!, interaction.user.id)
+        
+        if (!response) {
+            await interaction.reply(`Something went wrong in the creation of your user account`)
+            return;
+        }
+
+        await interaction.reply(`User ${response.discord_name} was created in our Guru Casino`)
+        
     },
 }
