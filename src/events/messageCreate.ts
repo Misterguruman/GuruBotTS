@@ -5,7 +5,7 @@ import { ColorSelector } from '../utils/tcolor'
 module.exports = {
     name: 'messageCreate',
     execute(messagePromise: Message) {
-        let messageResult = messagePromise.fetch() 
+        messagePromise.fetch() 
         .then((message) => {
             console.log( `${ColorSelector.BgGreen}` + `${ColorSelector.FgBlack}` + `${message.guild} (${message.guildId}): ${message.author.tag}` +
                                         `${ColorSelector.Reset}` +  `=> ${message.content}"`)
