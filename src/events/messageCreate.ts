@@ -1,5 +1,5 @@
 import type { Message } from 'discord.js'
-import { ColorSelector } from '../utils/tcolor'
+import { ColorSelector } from '../utils/TerminalColor'
 
 
 module.exports = {

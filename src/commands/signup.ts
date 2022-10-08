@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js'
 import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
-import { addPlayer, checkPlayer, updateBalance } from "../utils/supabase"
+import { addPlayer, checkPlayer, updateBalance } from "../utils/SupabaseHandler"
 
 module.exports = {
     data: new SlashCommandBuilder()
