@@ -1,7 +1,8 @@
 // Require the necessary discord.js classes
 import { Client, GatewayIntentBits, Guild, OAuth2Guild, Collection } from 'discord.js'
-import { supabase, getAllTableData } from './utils/supabase';
-import {RegisterSlashCommand } from'./utils/registerSlashCommands'
+import { supabase, getAllTableData } from './utils/SupabaseHandler';
+import { RegisterSlashCommand } from './utils/RegisterSlashCommands'
+import type { PendingTransactions, PendingTransaction } from './types/GuruBotTypes' 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv'
@@ -9,6 +10,7 @@ import * as dotenv from 'dotenv'
 declare module "discord.js" {
 	export interface Client {
 		commands: Collection<any, any>
+		pendingTransactions: PendingTransactions
 	}
 }
 
@@ -27,6 +29,7 @@ export const client = new Client({ intents: [
 });
 
 client.commands = new Collection();
+client.pendingTransactions = {}
 // Login to Discord with your client's token
 client.login(process.env.DISCORDTOKEN);
 
