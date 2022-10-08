@@ -2,6 +2,7 @@ import { ComponentType, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, Bu
 import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
 import type { PendingTransaction } from '../types/GuruBotTypes';
 import { getBalance } from '../utils/SupabaseHandler';
+import { Deck, isHigh, isLow, calculateOddsHigh, calculateOddsLow, getDiscordValue } from '../utils/CardHandler'
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,6 +27,9 @@ module.exports = {
             .setStyle(ButtonStyle.Danger)
         );
         //Make sure user has enough funds in supabase
+        let deck = Deck
+        deck.shuffleDeck()
+
         let balance = await getBalance(interaction.user.id, interaction.guildId!)
         let bet = parseInt(interaction.options.getString('value')!)
         if (!balance) {
@@ -34,18 +38,28 @@ module.exports = {
 
 
         if (balance?.balance! >= bet!) {
-        
-            await interaction.reply({content: "Choose your bet:", components: [row], ephemeral:true})
+            let firstDraw = deck.drawCard()
+            let secondDraw = deck.drawCard()
+            await interaction.reply({content: `We're starting with a freshly shuffled deck. The card is ${getDiscordValue(firstDraw)}, select your bet`, components: [row], ephemeral:true})
             
             const buttonFilter = (i:any) => i.customId == 'low' || i.customId == 'high' && i.user.id == interaction.user.id  
             interaction.channel?.createMessageComponentCollector({filter: buttonFilter, componentType: ComponentType.Button})
             .on('collect', (click) => {
                 if (click.customId == 'high') {
-                    click.update({content:'You selected High Bet', components:[]})
+                    if (isHigh(firstDraw, secondDraw)) {
+                        click.update({content:`Second card was ${getDiscordValue(secondDraw)}. You won! Congratulations`, components:[]})
+                        return
+                    }
+                    click.update({content:`Second card was ${getDiscordValue(secondDraw)}. You lost :( Better luck next time`, components:[]})
                     return;
                 }
 
-                click.update({content:'You selected Low Bet', components:[]})
+                if (isLow(firstDraw, secondDraw)) {
+                    click.update({content:`Second card was ${getDiscordValue(secondDraw)}. You won! Congratulations`, components:[]})
+                    return
+                }
+                click.update({content:`Second card was ${getDiscordValue(secondDraw)}. You lost :( Better luck next time`, components:[]})
+                return;
 
 
             })
