@@ -28,9 +28,7 @@ export enum SuitEmojis {
 export const Deck = new DeckOfCards()
 
 export function isHigh(firstCard:Card, secondCard:Card):boolean {
-    let c1 = `card${firstCard.rank}`
-    let c2 = `card${secondCard.rank}`
-    if (CardComparisons[c2 as keyof typeof CardComparisons] > CardComparisons[c1 as keyof typeof CardComparisons]) {
+    if (CardComparisons[`card${secondCard.rank}` as keyof typeof CardComparisons] > CardComparisons[`card${firstCard.rank}` as keyof typeof CardComparisons]) {
         return true
     }
 

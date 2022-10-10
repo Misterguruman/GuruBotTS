@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 import * as fs from 'node:fs';
 import * as path from 'node:path'
 
-export function RegisterSlashCommand(gid:string) {
+export async function RegisterSlashCommand(gid:string) {
     dotenv.config()
     let commands: Array<JSON> = [];
     const commandsPath = path.join(__dirname, '../commands');
@@ -20,9 +20,11 @@ export function RegisterSlashCommand(gid:string) {
     // console.log(commands)
     const rest = new REST({ version: '10' }).setToken(process.env.DISCORDTOKEN!);
 
-    rest.put(Routes.applicationGuildCommands(process.env.DISCORDCLIENTID!, gid), { body: commands })
-    .then((data: any) => console.log(`Successfully registered ${data.length} application commands to Guild ID: ${gid}.`))
-    .catch(console.error);
+    let data:any = await rest.put(Routes.applicationGuildCommands(process.env.DISCORDCLIENTID!, gid), { body: commands })
+    
+    if (data) {
+        console.log(`Successfully registered ${data.length} application commands to Guild ID: ${gid}.`)
+    }
 }
 
 export async function validateSlashCommands() {
@@ -36,7 +38,6 @@ export async function validateSlashCommands() {
 		if (clientCommands.every((commandName) => thisGuildCommands.includes(commandName))) return acc;
 
 		acc.push(gid)
-		// if (clientCommands === thisGuildCommands) return acc;
 		return acc
 	}, [])
 
