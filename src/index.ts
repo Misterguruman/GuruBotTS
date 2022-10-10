@@ -25,7 +25,6 @@ export const client = new Client({ intents: [
 	GatewayIntentBits.GuildVoiceStates, 
 	GatewayIntentBits.MessageContent, 
 	GatewayIntentBits.GuildMembers, 
-	GatewayIntentBits.GuildPresences
 	] 
 });
 

@@ -20,26 +20,36 @@ export async function RegisterSlashCommand(gid:string) {
     // console.log(commands)
     const rest = new REST({ version: '10' }).setToken(process.env.DISCORDTOKEN!);
 
-    let data:any = await rest.put(Routes.applicationGuildCommands(process.env.DISCORDCLIENTID!, gid), { body: commands })
+    await rest.put(Routes.applicationGuildCommands(process.env.DISCORDCLIENTID!, gid), { body: commands })
     
-    if (data) {
-        console.log(`Successfully registered ${data.length} application commands to Guild ID: ${gid}.`)
-    }
+
+    console.log(`Successfully registered ${commands.length} application commands to Guild ID: ${gid}.`)
+
 }
 
 export async function validateSlashCommands() {
+    let guildIds = (await client.guilds.fetch()).map((guild) => guild.id)
 	let guildCommands = await Promise.all(client.guilds.cache.map((guild) => guild.commands.fetch()))
+    // let guildCommands = await Promise.all((await client.guilds.fetch()).map((guild) => guild.id))
 	let clientCommands:string[] = [...client.commands.keys()]
 	// return guildCommands
 	let invalidGuilds = guildCommands.reduce<string[]>((acc, cv) => {
-		let gid:string = cv.first()!.guildId!
-		let thisGuildCommands = cv.map((ac) => ac.name)
+        let gid:string;
+        if (cv.size > 0) {
+		    gid = cv.first()!.guildId!
+            guildIds = guildIds.filter( (g) => g !== gid )
+            let thisGuildCommands = cv.map((ac) => ac.name)
+            if (clientCommands.every((commandName) => thisGuildCommands.includes(commandName))) return acc;
+            acc.push(gid)
+            
+        }
+        return acc;
 
-		if (clientCommands.every((commandName) => thisGuildCommands.includes(commandName))) return acc;
-
-		acc.push(gid)
-		return acc
 	}, [])
+
+    if (guildIds.length) {
+        guildIds.map((g) => invalidGuilds.push(g))
+    }
 
 	if (!invalidGuilds.length) {
 		return;
