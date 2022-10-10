@@ -3,6 +3,10 @@
  * Do not make direct changes to the file.
  */
 
+/**
+ *  npx openapi-typescript https://vetntcurweaavafzupoo.supabase.co/rest/v1/?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldG50Y3Vyd2VhYXZhZnp1cG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjQ1OTA4OTAsImV4cCI6MTk4MDE2Njg5MH0.Fx7nI37IFfJnhGNdpkkoY7gX67N7jby7Gwd3NThYTGs --output src/types/SupabaseTypes2.ts
+ */
+
 export interface paths {
   "/": {
     get: {
@@ -141,13 +145,15 @@ export interface paths {
       };
     };
   };
-  "/guilds": {
+  "/managedvoicechannels": {
     get: {
       parameters: {
         query: {
-          id?: parameters["rowFilter.guilds.id"];
-          created_at?: parameters["rowFilter.guilds.created_at"];
-          guildId?: parameters["rowFilter.guilds.guildId"];
+          id?: parameters["rowFilter.managedvoicechannels.id"];
+          created_at?: parameters["rowFilter.managedvoicechannels.created_at"];
+          /** An array of managed VC's on a server */
+          guildId?: parameters["rowFilter.managedvoicechannels.guildId"];
+          channelId?: parameters["rowFilter.managedvoicechannels.channelId"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -169,7 +175,7 @@ export interface paths {
       responses: {
         /** OK */
         200: {
-          schema: definitions["guilds"][];
+          schema: definitions["managedvoicechannels"][];
         };
         /** Partial Content */
         206: unknown;
@@ -178,8 +184,8 @@ export interface paths {
     post: {
       parameters: {
         body: {
-          /** guilds */
-          guilds?: definitions["guilds"];
+          /** managedvoicechannels */
+          managedvoicechannels?: definitions["managedvoicechannels"];
         };
         query: {
           /** Filtering Columns */
@@ -198,9 +204,11 @@ export interface paths {
     delete: {
       parameters: {
         query: {
-          id?: parameters["rowFilter.guilds.id"];
-          created_at?: parameters["rowFilter.guilds.created_at"];
-          guildId?: parameters["rowFilter.guilds.guildId"];
+          id?: parameters["rowFilter.managedvoicechannels.id"];
+          created_at?: parameters["rowFilter.managedvoicechannels.created_at"];
+          /** An array of managed VC's on a server */
+          guildId?: parameters["rowFilter.managedvoicechannels.guildId"];
+          channelId?: parameters["rowFilter.managedvoicechannels.channelId"];
         };
         header: {
           /** Preference */
@@ -215,13 +223,15 @@ export interface paths {
     patch: {
       parameters: {
         query: {
-          id?: parameters["rowFilter.guilds.id"];
-          created_at?: parameters["rowFilter.guilds.created_at"];
-          guildId?: parameters["rowFilter.guilds.guildId"];
+          id?: parameters["rowFilter.managedvoicechannels.id"];
+          created_at?: parameters["rowFilter.managedvoicechannels.created_at"];
+          /** An array of managed VC's on a server */
+          guildId?: parameters["rowFilter.managedvoicechannels.guildId"];
+          channelId?: parameters["rowFilter.managedvoicechannels.channelId"];
         };
         body: {
-          /** guilds */
-          guilds?: definitions["guilds"];
+          /** managedvoicechannels */
+          managedvoicechannels?: definitions["managedvoicechannels"];
         };
         header: {
           /** Preference */
@@ -285,7 +295,7 @@ export interface definitions {
      */
     discord_id: string;
   };
-  guilds: {
+  managedvoicechannels: {
     /**
      * Format: uuid
      * @description Note:
@@ -298,8 +308,13 @@ export interface definitions {
      * @default now()
      */
     created_at?: string;
-    /** Format: text */
+    /**
+     * Format: text
+     * @description An array of managed VC's on a server
+     */
     guildId: string;
+    /** Format: text */
+    channelId?: string;
   };
 }
 
@@ -375,14 +390,19 @@ export interface parameters {
    * @description Discord user's unique identifier
    */
   "rowFilter.players.discord_id": string;
-  /** @description guilds */
-  "body.guilds": definitions["guilds"];
+  /** @description managedvoicechannels */
+  "body.managedvoicechannels": definitions["managedvoicechannels"];
   /** Format: uuid */
-  "rowFilter.guilds.id": string;
+  "rowFilter.managedvoicechannels.id": string;
   /** Format: timestamp with time zone */
-  "rowFilter.guilds.created_at": string;
+  "rowFilter.managedvoicechannels.created_at": string;
+  /**
+   * Format: text
+   * @description An array of managed VC's on a server
+   */
+  "rowFilter.managedvoicechannels.guildId": string;
   /** Format: text */
-  "rowFilter.guilds.guildId": string;
+  "rowFilter.managedvoicechannels.channelId": string;
 }
 
 export interface operations {}
