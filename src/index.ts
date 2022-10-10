@@ -10,7 +10,7 @@ import { response } from 'express';
 declare module "discord.js" {
 	export interface Client {
 		commands: Collection<any, any>
-		pendingTransactions: PendingTransactions
+		managedVCs: string[]
 	}
 }
 
@@ -30,7 +30,7 @@ export const client = new Client({ intents: [
 });
 
 client.commands = new Collection();
-client.pendingTransactions = {}
+client.managedVCs = []
 // Login to Discord with your client's token
 client.login(process.env.DISCORDTOKEN)
 	.then(() => {
