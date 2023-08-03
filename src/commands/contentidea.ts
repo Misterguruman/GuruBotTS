@@ -11,6 +11,8 @@ module.exports = {
     .setName('contentidea')
     .setDescription('An AI powered by ChatGPT with the ability to generate content ideas.'),
     async execute(interaction: ChatInputCommandInteraction<CacheType>) {
+        console.log(`${interaction.user.username} sent the /contentidea command`)
+
         interaction.reply({ content: ':brain: Thinking... ', ephemeral: true})
         const response: AxiosResponse<ChatGPTResponse, any> = await axios({
             method: 'post',
