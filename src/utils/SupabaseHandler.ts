@@ -1,8 +1,6 @@
 import { createClient, PostgrestResponse } from "@supabase/supabase-js"
-import type {PostgrestSingleResponse} from '@supabase/supabase-js'
 import { definitions } from "../types/SupabaseTypes"
 import * as dotenv from 'dotenv'
-import { isBuffer } from "util"
 dotenv.config()
 
 //Supabase instance up here so we can load it in parallel with the discord client

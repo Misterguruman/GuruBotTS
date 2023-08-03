@@ -9,3 +9,25 @@ export interface PendingTransaction {
     game: string,
     interaction: ChatInputCommandInteraction<CacheType>
 }
+
+export interface ChatGPTResponse {
+    "id": string,
+    "object": string,
+    "created": number,
+    "model": string,
+    "choices": Array<ChatGPTChat>,
+    "usage": {
+        "prompt_tokens": number,
+        "completion_tokens": number,
+        "total_tokens": number
+    }
+}
+
+export interface ChatGPTChat {
+    "index": number,
+    "message": {
+        "role": "assistant" | "user" | "system" | "function",
+        "content": string
+    },
+    "finish_reason": string
+}
