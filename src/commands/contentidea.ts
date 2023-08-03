@@ -11,7 +11,7 @@ module.exports = {
     .setName('contentidea')
     .setDescription('An AI powered by ChatGPT with the ability to generate content ideas.'),
     async execute(interaction: ChatInputCommandInteraction<CacheType>) {
-        interaction.reply('Thinking... ')
+        interaction.reply({ content: ':brain: Thinking... ', ephemeral: true})
         const response: AxiosResponse<ChatGPTResponse, any> = await axios({
             method: 'post',
             url: "https://api.openai.com/v1/chat/completions",
@@ -31,6 +31,6 @@ module.exports = {
             }
         })
         
-        await interaction.editReply(`${response.data.choices[0].message.content}`)
+        await interaction.editReply({ content: `${response.data.choices[0].message.content}\n\n\n I hope you're enjoying this feature, friendly reminder that ChatGPT is a paid service that I pay for out of my own poket, feel free to drop a tip to me on Venmo (@Joseph-Langford-4) or on Cashapp ($JosephLangford)`})
     }
 }
