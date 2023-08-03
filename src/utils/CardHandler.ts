@@ -25,9 +25,11 @@ export enum SuitEmojis {
     clubs = ":clubs:"
 }
 
+
 export const Deck = new DeckOfCards()
 
 export function isHigh(firstCard:Card, secondCard:Card):boolean {
+    firstCard.compare
     if (CardComparisons[`card${secondCard.rank}` as keyof typeof CardComparisons] > CardComparisons[`card${firstCard.rank}` as keyof typeof CardComparisons]) {
         return true
     }
@@ -47,7 +49,7 @@ export function isLow(firstCard:Card, secondCard:Card):boolean {
 
 export function calculateOddsHigh(d:DeckOfCards, c:Card) {
     let count = d.deck.reduce((acc, cv) => {
-        if (CardComparisons[`card${cv.rank}` as keyof typeof CardComparisons] < CardComparisons[`card${c.rank}` as keyof typeof CardComparisons]) {
+        if (CardComparisons[`card${cv.rank}` as keyof typeof CardComparisons] > CardComparisons[`card${c.rank}` as keyof typeof CardComparisons]) {
             return acc + 1
         }
         
@@ -60,7 +62,7 @@ export function calculateOddsHigh(d:DeckOfCards, c:Card) {
 
 export function calculateOddsLow(d:DeckOfCards, c:Card) {
     let count = d.deck.reduce((acc, cv) => {
-        if (CardComparisons[`card${cv.rank}` as keyof typeof CardComparisons] > CardComparisons[`card${c.rank}` as keyof typeof CardComparisons]) {
+        if (CardComparisons[`card${cv.rank}` as keyof typeof CardComparisons] < CardComparisons[`card${c.rank}` as keyof typeof CardComparisons]) {
             return acc + 1
         }
         
