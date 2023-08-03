@@ -3,6 +3,8 @@ import { SlashCommandBuilder } from 'discord.js'
 import axios from 'axios'
 import type { AxiosResponse } from 'axios'
 import { ChatGPTResponse } from '../types/GuruBotTypes'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 module.exports = {
     data: new SlashCommandBuilder()
