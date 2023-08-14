@@ -1,4 +1,4 @@
-import { validateSlashCommands } from '../utils/RegisterSlashCommands'
+import { validateSlashCommands } from '../utils/registerSlashCommands'
 import * as fs from 'fs';
 import * as path from 'path';
 

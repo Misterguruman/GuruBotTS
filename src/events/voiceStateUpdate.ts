@@ -11,6 +11,7 @@ module.exports = {
             //see if channel is managed
 
             if (oldState.channelId && oldState.channel) {
+                // What duh heeeeeeeeeelllllllllll
                 if (oldState.client.managedVCs.includes(oldState.channelId)) {
                     let generatedVC = await oldState.channel.fetch()
                     console.log(`Members in VC: ${generatedVC.members.size}`)
@@ -34,8 +35,7 @@ module.exports = {
 
             //if it is, create a new vc in the same category/parent
             let guild = await newState.guild.fetch()
-            let newChannel = await guild.channels.create({type: ChannelType.GuildVoice, name:`${newState.channel!.parent?.name.split(' ').join("-")}-${count.size + 1}`})
-            await newChannel.setParent(newState.channel.parent)
+            let newChannel = await guild.channels.create({type: ChannelType.GuildVoice, name:`${newState.channel!.parent?.name.split(' ').join("-")}-${count.size + 1}`, parent: oldState.channel!.parent?.id})
             await newState.member?.voice.setChannel(newChannel)
 
             newState.client.managedVCs.push(newChannel.id)
