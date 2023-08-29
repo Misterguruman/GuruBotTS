@@ -2,11 +2,9 @@ import { Interaction, Collection, ChatInputCommandInteraction, CacheType, Button
 
 
 module.exports = {
-    name: 'interactionCreate',
+  name: 'interactionCreate',
 	async execute(interaction: Interaction<CacheType> | ChatInputCommandInteraction<CacheType>) {
-        
         if (!interaction.isChatInputCommand()) return;
-
         const command = interaction.client.commands.get(interaction.commandName);
 
         if (!command) {
