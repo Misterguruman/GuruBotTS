@@ -1,7 +1,8 @@
-module.exports = {
-    name: 'guildDelete',
-    async execute(guild: any) {
-        console.log(`${guild.name} has removed the bot. ID: ${guild.id}`)
-    }
-    
+import { Events, Guild } from "discord.js"
+
+export default {
+  name: Events.GuildDelete,
+  execute: (eventData: Guild) => {
+    console.log(`${eventData.name} has removed the bot. ID: ${eventData.id}`)
+  }
 }

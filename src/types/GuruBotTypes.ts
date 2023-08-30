@@ -31,3 +31,8 @@ export interface ChatGPTChat {
     },
     "finish_reason": string
 }
+
+export interface DiscordEvent {
+  name: string,
+  execute: () 
+}

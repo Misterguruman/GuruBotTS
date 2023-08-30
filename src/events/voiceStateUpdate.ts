@@ -1,14 +1,13 @@
-import { VoiceState, ChannelType, NewsChannel } from "discord.js";
-import { getManagedVC, getManagedVCbyServer } from "../utils/SupabaseHandler"
+import { VoiceState, ChannelType,  Events } from "discord.js";
+import { getManagedVCbyServer } from "../utils/SupabaseHandler"
 
-module.exports = {
-    name: 'voiceStateUpdate',
-    async execute(oldState:VoiceState, newState:VoiceState) { 
+export default {
+    name: Events.VoiceStateUpdate, 
+    execute: async (oldState:VoiceState, newState:VoiceState) => { 
         if (oldState.channel !== newState.channel) {
             if (newState.channel) console.log(`${newState.member!.displayName} is in ${newState.guild.name} in channel ${newState.channel.name}`)
 
             let managed = await getManagedVCbyServer(newState.guild.id)
-            //see if channel is managed
 
             if (oldState.channelId && oldState.channel) {
                 // What duh heeeeeeeeeelllllllllll
@@ -50,8 +49,5 @@ module.exports = {
 
             console.log(`${newState.member!.displayName} is no longer streaming`)
         }
-
-
-        // console.log(`${newState.member!.displayName} is in channel ${newState.channel}`)
     }
 }

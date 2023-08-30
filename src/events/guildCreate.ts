@@ -1,6 +1,8 @@
-module.exports = {
-	name: 'guildCreate',
-	execute(guild: any) {
-    console.log(`${guild.name} joined! Guild ID: ${guild.id}`)
-	},
-};
+import {Events, Guild} from 'discord.js'
+
+export default { 
+  name: Events.GuildCreate,
+  execute(eventData: Guild) {
+    console.log(`${eventData.name} joined! Guild ID: ${eventData.id}`)
+  } 
+}

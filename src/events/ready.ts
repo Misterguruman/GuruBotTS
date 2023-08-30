@@ -1,11 +1,13 @@
 import { validateSlashCommands } from '../utils/registerSlashCommands'
+import { Client, Events } from 'discord.js'
 import * as fs from 'fs';
 import * as path from 'path';
 
-module.exports = {
-	name: 'ready',
+export default {
+	name: Events.ClientReady,
 	once: true,
-	async execute(client: any) {
+	execute: async (client: Client) => {
+    if (!client.user) return;
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 
 		const commandsPath = path.join(__dirname, '../commands');
@@ -18,8 +20,5 @@ module.exports = {
 		}
 
 		await validateSlashCommands()
-
-		
-
 	},
 };

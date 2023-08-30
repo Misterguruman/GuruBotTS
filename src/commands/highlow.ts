@@ -1,9 +1,8 @@
 import { ComponentType, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ButtonInteraction } from 'discord.js'
 import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
 import { getBalance, updateBalance } from '../utils/SupabaseHandler';
-import { Deck, isHigh, isLow, calculateOddsHigh, calculateOddsLow, getDiscordValue } from '../utils/CardHandler'
+import { Deck, isHigh, isLow, getDiscordValue } from '../utils/CardHandler'
 import type {Card} from 'card-games-typescript'
-import { definitions } from '../types/SupabaseTypes'
 
 module.exports = {
     data: new SlashCommandBuilder()

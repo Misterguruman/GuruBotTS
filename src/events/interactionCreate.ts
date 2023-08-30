@@ -1,19 +1,14 @@
-import { Interaction, Collection, ChatInputCommandInteraction, CacheType, ButtonInteraction } from "discord.js"
+import { Interaction, ChatInputCommandInteraction, CacheType, Events } from "discord.js"
 
-
-module.exports = {
-  name: 'interactionCreate',
-	async execute(interaction: Interaction<CacheType> | ChatInputCommandInteraction<CacheType>) {
-        if (!interaction.isChatInputCommand()) return;
-        const command = interaction.client.commands.get(interaction.commandName);
-
+export default {
+  name: Events.InteractionCreate, 
+	execute: async (eventData: Interaction<CacheType> | ChatInputCommandInteraction<CacheType>): Promise<void> => {  
+    if (!eventData.isChatInputCommand()) return;
+      const command = eventData.client.commands.get(eventData.commandName);
         if (!command) {
-
+          return;
         };
-
-        await command.execute(interaction);
-
-
+       await command.execute(eventData);
     },
 };
 

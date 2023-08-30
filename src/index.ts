@@ -3,6 +3,7 @@ import { supabase } from './utils/SupabaseHandler';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv'
+import { GuruBotEventBundle } from 'events'
 
 declare module "discord.js" {
 	export interface Client {
@@ -16,7 +17,7 @@ dotenv.config();
 
 export const client = new Client({ intents: [
 	GatewayIntentBits.Guilds, 
-	GatewayIntentBits.GuildMessages, 
+	GatewayIntentBits.GuildMessages,  
 	GatewayIntentBits.GuildVoiceStates, 
 	GatewayIntentBits.MessageContent, 
 	GatewayIntentBits.GuildMembers, 
@@ -30,7 +31,12 @@ client.login(process.env.DISCORDTOKEN)
 	.then(() => {
 		const eventsPath = path.join(__dirname, 'events');
 		const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.ts'));
-		
+	
+    for (let event of GuruBotEventBundle) {
+      if (event.once) client.once(event.name, (...args) => event.execute(...args).catch((error:any) => console.log(`ERROR: ${error}`)));
+    }
+
+
 		for (const file of eventFiles) {
 			const filePath = path.join(eventsPath, file);
 			const event = require(filePath);
