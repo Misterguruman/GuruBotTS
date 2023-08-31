@@ -34,7 +34,7 @@ export default {
 
             //if it is, create a new vc in the same category/parent
             let guild = await newState.guild.fetch()
-            let newChannel = await guild.channels.create({type: ChannelType.GuildVoice, name:`${newState.channel!.parent?.name.split(' ').join("-")}-${count.size + 1}`, parent: oldState.channel!.parent?.id})
+            let newChannel = await guild.channels.create({type: ChannelType.GuildVoice, name:`${newState.channel!.parent?.name.split(' ').join("-")}-${count.size + 1}`, parent: newState.channel!.parent?.id})
             await newState.member?.voice.setChannel(newChannel)
 
             newState.client.managedVCs.push(newChannel.id)
