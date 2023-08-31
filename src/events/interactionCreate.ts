@@ -6,7 +6,6 @@ export default {
     if (!eventData.isChatInputCommand()) return;
       const command = eventData.client.commands.get(eventData.commandName);
         if (!command) {
-          return;
         };
        await command.execute(eventData);
     },

@@ -13,5 +13,4 @@ export interface GuruBotEvent {
   execute: (eventData: undefined) => void
 }
 
-export const GuruBotEventBundle: GuruBotEvent[] = [ guildCreate, guildDelete, guildMemberAdd, interactionCreate, messageCreate, ready, voiceStateUpdate]
-
+export const GuruBotEventBundle: any[] = [ guildCreate, guildDelete, guildMemberAdd, interactionCreate, messageCreate, ready, voiceStateUpdate]

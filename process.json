@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "GuruBot",
+      "script": "npx yarn reload",
+      "args": "run start",
+      "time": true,
+      "restart_delay": 60000
+    }
+  ]
+}

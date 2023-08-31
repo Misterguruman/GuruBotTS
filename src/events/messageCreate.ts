@@ -9,6 +9,6 @@ export default {
             console.log( `${ColorSelector.BgGreen}` + `${ColorSelector.FgBlack}` + `${message.guild} (${message.guildId}): ${message.author.tag}` +
                                         `${ColorSelector.Reset}` +  `=> ${message.content}"`)
 
-        } ,(error) => console.log(`ERROR: ${error}`))
+        }).catch((error) => console.log(`ERROR: ${error}`))
     }
 }
