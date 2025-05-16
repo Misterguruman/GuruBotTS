@@ -2,7 +2,8 @@ import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js'
 import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
 import { insertManagedVoiceChannel, getManagedVoiceChannel, deleteManagedVoiceChannel } from '../utils/database'
 
-module.exports = {
+export default {
+    name: 'dynamicvc',
     data: new SlashCommandBuilder()
     .setName('dynamicvc')
     .setDescription('Manage Dynamic VC Channel in your server')

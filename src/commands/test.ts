@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from 'discord.js'
 import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName('test')
     .setDescription('testaroo'),

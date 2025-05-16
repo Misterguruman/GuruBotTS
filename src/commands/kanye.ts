@@ -3,7 +3,7 @@ import { SlashCommandBuilder } from 'discord.js'
 import axios from 'axios'
 import type {} from 'axios'
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName('kanye')
     .setDescription('When you need a random Kanye West quote, this is your command'),
