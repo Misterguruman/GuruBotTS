@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js'
 import type { ChatInputCommandInteraction, CacheType } from 'discord.js'
-import { addManagedVC, getManagedVC, deleteManagedVC } from '../utils/SupabaseHandler'
+import { insertManagedVoiceChannel, getManagedVoiceChannel, deleteManagedVoiceChannel } from '../utils/database'
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -31,22 +31,22 @@ module.exports = {
         let subcommand = interaction.options.getSubcommand()
         if (subcommand == 'add') {
             let channel = interaction.options.getChannel('dynamicvc')
-            let c = await interaction.client.channels.fetch(channel!.id)
-            if (c?.isVoiceBased()) {
+            let target_channel = await interaction.client.channels.fetch(channel!.id)
+            if (target_channel?.isVoiceBased()) {
                 await interaction.reply({content: `You have selected: ${channel}. This will be set as a Dynamic Voice Channel`})
-                await addManagedVC(interaction.guild!.id, c!.id)
+                await insertManagedVoiceChannel(target_channel!.id, interaction.guild!.id)
                 return
             }
 
             await interaction.reply({content: `You selected ${channel}. Please try again and select a Voice Channel`, ephemeral:true})
         } else {
             let channel = interaction.options.getChannel('dynamicvc')
-            let c = await interaction.client.channels.fetch(channel!.id)
+            let target_channel = await interaction.client.channels.fetch(channel!.id)
 
-            let exists = await getManagedVC(c!.id)
+            let exists = await getManagedVoiceChannel(target_channel!.id)
             if (exists) {
                 await interaction.reply(`${channel} will be removed from our managed voice channels`)
-                await deleteManagedVC(interaction.guild!.id, c!.id)
+                await deleteManagedVoiceChannel(target_channel!.id)
                 return;
             }
 
