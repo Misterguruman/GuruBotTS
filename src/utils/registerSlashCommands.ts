@@ -1,17 +1,15 @@
 import { REST, Routes } from 'discord.js'
 import { client } from '..'
+import type { RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10'
 import * as fs from 'node:fs';
 import * as path from 'node:path'
+import { GuruBotCommandBundle } from '../commands';
 
-export async function RegisterSlashCommand(gid:string) {
-  let commands: Array<JSON> = [];
-  const commandsPath = path.join(__dirname, '../commands');
-  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts'));
-   
-  for (const file of commandFiles) {
-     const filePath = path.join(commandsPath, file);
-     const command = require(filePath);
-     commands.push(command.data.toJSON());
+export async function RegisterSlashCommands(gid:string) {
+  let commands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody> = [];
+
+  for (const command of GuruBotCommandBundle) {
+    commands.push(command.data.toJSON());
   }
    
   const rest = new REST({ version: '10' }).setToken(Bun.env.DISCORDTOKEN!);
@@ -47,5 +45,5 @@ export async function validateSlashCommands() {
 		return;
 	}
 
-	await Promise.all( guildsToRefresh.map((gid) => RegisterSlashCommand(gid)))
+	await Promise.all( guildsToRefresh.map((gid) => RegisterSlashCommands(gid)))
 }
