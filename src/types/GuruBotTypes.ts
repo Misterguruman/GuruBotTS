@@ -36,3 +36,18 @@ export interface DiscordEvent {
   name: string,
   execute: any
 }
+
+/* ------------------------------------------------------------
+ * Database types
+ * ---------------------------------------------------------- */
+export interface ManagedVoiceChannel {
+  id: string;
+  channelId: string;
+  guildId: string;
+}
+
+export interface LogChannel {
+  id: string;
+  channelId: string;
+  guildId: string;
+}
