@@ -1,5 +1,5 @@
 import { VoiceState, ChannelType,  Events } from "discord.js";
-import { getManagedVCbyServer } from "../utils/SupabaseHandler"
+import { getManagedVoiceChannelsByGuild } from "../utils/database";
 
 export default {
     name: Events.VoiceStateUpdate, 
@@ -7,7 +7,7 @@ export default {
         if (oldState.channel !== newState.channel) {
             if (newState.channel) console.log(`${newState.member!.displayName} is in ${newState.guild.name} in channel ${newState.channel.name}`)
 
-            let managed = await getManagedVCbyServer(newState.guild.id)
+            let managed = await getManagedVoiceChannelsByGuild(newState.guild.id)
 
             if (oldState.channelId && oldState.channel) {
                 // What duh heeeeeeeeeelllllllllll

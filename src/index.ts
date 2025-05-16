@@ -1,7 +1,6 @@
 import { Client, GatewayIntentBits, Collection } from 'discord.js'
-import { supabase } from './utils/SupabaseHandler';
 import { GuruBotEventBundle } from './events/index' 
-import * as dotenv from 'dotenv'
+import logger from './utils/logger'
 
 declare module "discord.js" {
 	export interface Client {
@@ -9,9 +8,6 @@ declare module "discord.js" {
 		managedVCs: string[]
 	}
 }
-
-supabase
-dotenv.config();
 
 export const client = new Client({ intents: [
 	GatewayIntentBits.Guilds, 
@@ -25,7 +21,7 @@ export const client = new Client({ intents: [
 client.commands = new Collection();
 client.managedVCs = []
 
-client.login(process.env.DISCORDTOKEN)
+client.login(Bun.env.DISCORDTOKEN)
 	.then(() => {
     for (let event of GuruBotEventBundle) {
       if (event.once) {

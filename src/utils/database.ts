@@ -1,114 +1,143 @@
-// Database: gurubot
-// Table: managedvoicechannels
-// Column: channelId (text)
-// Column: guildId (text)
-// Column: id (uuid)
-
-// Table: logchannels
-// Column: channelId (text)
-// Column: guildId (text)
-// Column: id (uuid)
-import postgres from "postgres";
-import type { ManagedVoiceChannel, LogChannel } from "../types/GuruBotTypes";
-
-// Pull the connection string from the environment (e.g. postgres://user:pass@host/db)
-const DATABASE_URL = Bun.env.DATABASE_URL ?? "postgres://postgres:postgres@localhost:5432/gurubot";
-export const sql = postgres(DATABASE_URL, { prepare: true });
-
-/**
- * Ensures managedvoicechannels and logchannels tables exist.
+/*
+ * Bun + MariaDB (https://mariadb.com/kb/en/mariadb-connector-nodejs/)
+ * Utility for the *gurubot* self‑hosted database. Provides minimal schema
+ * bootstrap plus typed CRUD helpers for:
+ *   - managedvoicechannels
+ *   - logchannels
  */
+
+import mariadb from "mariadb";
+
+// Connection string like: mysql://user:pass@host:3306/gurubot
+const DATABASE_URL = Bun.env.DATABASE_URL ?? "mysql://root:root@localhost:3306/gurubot";
+
+const { hostname: host, username: user, password, pathname, port } = new URL(DATABASE_URL);
+const database = pathname.replace(/^\//, "");
+
+export const pool = mariadb.createPool({
+  host,
+  user,
+  password,
+  database,
+  port: Number(port) || 3306,
+  connectionLimit: 5,
+});
+
+/* ------------------------------------------------------------
+ * Schema bootstrap – idempotent
+ * ---------------------------------------------------------- */
 export async function ensureSchema() {
-    // Enable the pgcrypto extension so we can default-generate UUIDs
-    await sql`
-        CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-    `;
+  await pool.query(`CREATE TABLE IF NOT EXISTS managedvoicechannels (
+      id        CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+      channelId TEXT      NOT NULL,
+      guildId   TEXT      NOT NULL
+  );`);
 
-    // Managed voice channels table – stores the channel <-> guild relationship
-    await sql`
-    CREATE TABLE IF NOT EXISTS managedvoicechannels (
-        id        UUID  PRIMARY KEY DEFAULT gen_random_uuid(),
-        channelId TEXT  NOT NULL,
-        guildId   TEXT  NOT NULL
-    );
-    `;
-
-    // Log channels table – same shape, separate concern
-    await sql`
-    CREATE TABLE IF NOT EXISTS logchannels (
-        id        UUID  PRIMARY KEY DEFAULT gen_random_uuid(),
-        channelId TEXT  NOT NULL,
-        guildId   TEXT  NOT NULL
-    );
-    `;
+  await pool.query(`CREATE TABLE IF NOT EXISTS logchannels (
+      id        CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+      channelId TEXT      NOT NULL,
+      guildId   TEXT      NOT NULL
+  );`);
 }
 
+/* ------------------------------------------------------------
+ * Types
+ * ---------------------------------------------------------- */
+export interface ManagedVoiceChannel {
+  id: string;
+  channelId: string;
+  guildId: string;
+}
+
+export interface LogChannel {
+  id: string;
+  channelId: string;
+  guildId: string;
+}
+
+/* ------------------------------------------------------------
+ * Managed voice channels helpers
+ * ---------------------------------------------------------- */
+
 export async function getManagedVoiceChannel(channelId: string): Promise<ManagedVoiceChannel | null> {
-    const [row] = await sql<ManagedVoiceChannel[]>`
-        SELECT * FROM managedvoicechannels WHERE channelId = ${channelId} LIMIT 1;
-    `;
-    return row ?? null;
+  const rows = await pool.query<ManagedVoiceChannel[]>(
+    `SELECT * FROM managedvoicechannels WHERE channelId = ? LIMIT 1`,
+    [channelId]
+  );
+  return rows[0] ?? null;
 }
 
 export async function getManagedVoiceChannelsByGuild(guildId: string): Promise<ManagedVoiceChannel[]> {
-    return sql<ManagedVoiceChannel[]>`
-        SELECT * FROM managedvoicechannels WHERE guildId = ${guildId};
-    `;
+  return pool.query<ManagedVoiceChannel[]>(
+    `SELECT * FROM managedvoicechannels WHERE guildId = ?`,
+    [guildId]
+  );
 }
 
-export async function insertManagedVoiceChannel(channelId: string, guildId: string): Promise<ManagedVoiceChannel | null> {
-    const [row] = await sql<ManagedVoiceChannel[]>`
-        INSERT INTO managedvoicechannels (channelId, guildId)
-        VALUES (${channelId}, ${guildId})
-        RETURNING *;
-    `;
-    return row ?? null;
+export async function insertManagedVoiceChannel(channelId: string, guildId: string): Promise<ManagedVoiceChannel> {
+  const id = crypto.randomUUID();
+  await pool.query(
+    `INSERT INTO managedvoicechannels (id, channelId, guildId) VALUES (?, ?, ?)`,
+    [id, channelId, guildId]
+  );
+  return { id, channelId, guildId };
 }
 
 export async function deleteManagedVoiceChannel(channelId: string): Promise<boolean> {
-    const { count } = await sql`
-        DELETE FROM managedvoicechannels WHERE channelId = ${channelId};
-    ` as unknown as { count: number };
-    return count > 0;
+  const res: any = await pool.query(
+    `DELETE FROM managedvoicechannels WHERE channelId = ?`,
+    [channelId]
+  );
+  return res.affectedRows > 0;
 }
+
+/* ------------------------------------------------------------
+ * Log channels helpers
+ * ---------------------------------------------------------- */
 
 export async function getLogChannel(channelId: string): Promise<LogChannel | null> {
-    const [row] = await sql<LogChannel[]>`
-        SELECT * FROM logchannels WHERE channelId = ${channelId} LIMIT 1;
-    `;
-    return row ?? null;
+  const rows = await pool.query<LogChannel[]>(
+    `SELECT * FROM logchannels WHERE channelId = ? LIMIT 1`,
+    [channelId]
+  );
+  return rows[0] ?? null;
 }
 
-export async function insertLogChannel(channelId: string, guildId: string): Promise<LogChannel | null> {
-    const [row] = await sql<LogChannel[]>`
-        INSERT INTO logchannels (channelId, guildId)
-        VALUES (${channelId}, ${guildId})
-        RETURNING *;
-    `;
-    return row ?? null;
+export async function insertLogChannel(channelId: string, guildId: string): Promise<LogChannel> {
+  const id = crypto.randomUUID();
+  await pool.query(
+    `INSERT INTO logchannels (id, channelId, guildId) VALUES (?, ?, ?)`,
+    [id, channelId, guildId]
+  );
+  return { id, channelId, guildId };
 }
 
 export async function deleteLogChannel(channelId: string): Promise<boolean> {
-    const { count } = await sql`
-        DELETE FROM logchannels WHERE channelId = ${channelId};
-    ` as unknown as { count: number };
-    return count > 0;
+  const res: any = await pool.query(
+    `DELETE FROM logchannels WHERE channelId = ?`,
+    [channelId]
+  );
+  return res.affectedRows > 0;
 }
 
-/**
- * Lazily loaded ignore-list in memory. Call `loadIgnoredLogChannels()` once
- * at boot (after ensureSchema) to populate it.
- */
+/* ------------------------------------------------------------
+ * Ignored log channels in memory
+ * ---------------------------------------------------------- */
 export const ignoredLogChannels: Set<string> = new Set();
 
 export async function loadIgnoredLogChannels() {
-    const rows = await sql<{ channelId: string }[]>`
-        SELECT channelId FROM logchannels;
-    `;
-    rows.forEach(r => ignoredLogChannels.add(r.channelId));
+  const rows = await pool.query<{ channelId: string }[]>(
+    `SELECT channelId FROM logchannels`
+  );
+  rows.forEach(r => ignoredLogChannels.add(r.channelId));
 }
 
-ensureSchema().catch(err => {
-    console.error("Failed to initialise database schema", err);
+/* ------------------------------------------------------------
+ * Initialise on module load
+ * ---------------------------------------------------------- */
+ensureSchema()
+  .then(loadIgnoredLogChannels)
+  .catch(err => {
+    console.error("Database initialisation failed", err);
     process.exit(1);
-});
+  });
