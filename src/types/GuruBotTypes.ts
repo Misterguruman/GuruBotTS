@@ -34,5 +34,5 @@ export interface ChatGPTChat {
 
 export interface DiscordEvent {
   name: string,
-  execute: () 
+  execute: any
 }
